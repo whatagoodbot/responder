@@ -1,6 +1,6 @@
 import get from './controllers/get.js'
 import getAll from './controllers/getAll.js'
-import { addText, addImage } from './controllers/add.js'
+import add from './controllers/add.js'
 
 export default {
   'youSayISay/get': {
@@ -11,12 +11,8 @@ export default {
     responder: getAll,
     replyTopic: 'youSayISay/getAllReply'
   },
-  'youSayISay/addText': {
-    responder: addText,
-    replyTopic: 'youSayISay/addTextReply'
-  },
-  'youSayISay/addImage': {
-    responder: addImage,
-    replyTopic: 'youSayISay/addImageReply'
+  'youSayISay/add': {
+    responder: add,
+    replyTopic: 'youSayISay/addReply'
   }
 }
