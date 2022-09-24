@@ -1,0 +1,45 @@
+{
+  "name": "yousayisay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon -r dotenv/config src/index.js",
+    "lint": "standard",
+    "lint:fix": "standard --fix",
+    "start": "node src/index.js",
+    "test": "npm run lint && nyc --reporter=html --reporter=text mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whatagoodbot/youSayISay.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whatagoodbot/youSayISay/issues"
+  },
+  "homepage": "https://github.com/whatagoodbot/youSayISay#readme",
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "dotenv": "^16.0.2",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.19",
+    "nyc": "^15.1.0",
+    "standard": "^17.0.0"
+  },
+  "dependencies": {
+    "knex": "^2.3.0",
+    "mqtt": "^4.3.7",
+    "mysql": "^2.18.1",
+    "winston": "^3.8.2",
+    "winston-elasticsearch": "^0.17.1"
+  }
+}
