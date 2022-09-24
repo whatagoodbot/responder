@@ -9,7 +9,10 @@
     "lint": "standard",
     "lint:fix": "standard --fix",
     "start": "node src/index.js",
-    "test": "npm run lint && nyc --reporter=html --reporter=text mocha"
+    "test": "npm run lint && nyc --reporter=html --reporter=text mocha",
+    "knex:migrate": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:latest",
+    "knex:migrate:make": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:make $1",
+    "knex:migrate:down": "node -r dotenv/config ./node_modules/knex/bin/cli.js migrate:down"
   },
   "repository": {
     "type": "git",
