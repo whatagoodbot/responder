@@ -2,10 +2,10 @@ export default {
   development: {
     client: 'mysql',
     connection: {
-      host: process.env.YSIS_DB_HOST,
+      host: process.env.DB_HOST,
       database: 'youSayISay',
-      user: process.env.YSIS_DB_USER,
-      password: process.env.YSIS_DB_PASSWORD,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
       charset: 'utf8mb4'
     },
     migrations: {
@@ -19,10 +19,10 @@ export default {
   production: {
     client: 'mysql',
     connection: {
-      host: process.env.YSIS_DB_HOST_PRODUCTION,
+      host: process.env.DB_HOST_PRODUCTION,
       database: 'youSayISay',
-      user: process.env.YSIS_DB_USER,
-      password: process.env.YSIS_DB_PASSWORD,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
       charset: 'utf8mb4'
     },
     migrations: {
