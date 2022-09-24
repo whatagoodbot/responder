@@ -3,16 +3,16 @@ import getAll from './controllers/getAll.js'
 import add from './controllers/add.js'
 
 export default {
-  'youSayISay/get': {
+  'responder/get': {
     responder: get,
-    replyTopic: 'youSayISay/getReply'
+    replyTopic: 'responder/getReply'
   },
-  'youSayISay/getAll': {
+  'responder/getAll': {
     responder: getAll,
-    replyTopic: 'youSayISay/getAllReply'
+    replyTopic: 'responder/getAllReply'
   },
-  'youSayISay/add': {
+  'responder/add': {
     responder: add,
-    replyTopic: 'youSayISay/addReply'
+    replyTopic: 'responder/addReply'
   }
 }
