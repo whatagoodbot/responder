@@ -3,7 +3,7 @@ export default {
     client: 'mysql',
     connection: {
       host: process.env.DB_HOST,
-      database: 'whatAGoodBot_development',
+      database: 'youSayISay',
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       charset: 'utf8mb4'
@@ -20,7 +20,7 @@ export default {
     client: 'mysql',
     connection: {
       host: process.env.DB_HOST_PRODUCTION,
-      database: 'whatAGoodBot',
+      database: 'youSayISay',
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       charset: 'utf8mb4'
