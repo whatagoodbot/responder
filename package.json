@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whatagoodbot/youSayISay.git"
+    "url": "git+https://github.com/whatagoodbot/responder.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/whatagoodbot/youSayISay/issues"
+    "url": "https://github.com/whatagoodbot/responder/issues"
   },
-  "homepage": "https://github.com/whatagoodbot/youSayISay#readme",
+  "homepage": "https://github.com/whatagoodbot/responder#readme",
   "standard": {
     "env": [
       "mocha"

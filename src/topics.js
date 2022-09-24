@@ -2,17 +2,19 @@ import get from './controllers/get.js'
 import getAll from './controllers/getAll.js'
 import add from './controllers/add.js'
 
-export default {
-  'responder/get': {
+export const topicPrefix = `${process.env.NODE_ENV}/responder/`
+
+export const topics = {
+  get: {
     responder: get,
-    replyTopic: 'responder/getReply'
+    replyTopic: `${topicPrefix}getReply`
   },
-  'responder/getAll': {
+  getAll: {
     responder: getAll,
-    replyTopic: 'responder/getAllReply'
+    replyTopic: `${topicPrefix}getAllReply`
   },
-  'responder/add': {
+  add: {
     responder: add,
-    replyTopic: 'responder/addReply'
+    replyTopic: `${topicPrefix}addReply`
   }
 }
