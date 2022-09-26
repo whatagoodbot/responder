@@ -1,6 +1,6 @@
 {
   "name": "responder",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whatagoodbot/youSayISay.git"
+    "url": "git+https://github.com/whatagoodbot/responder.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/whatagoodbot/youSayISay/issues"
+    "url": "https://github.com/whatagoodbot/responder/issues"
   },
-  "homepage": "https://github.com/whatagoodbot/youSayISay#readme",
+  "homepage": "https://github.com/whatagoodbot/responder#readme",
   "standard": {
     "env": [
       "mocha"
@@ -39,6 +39,7 @@
     "standard": "^17.0.0"
   },
   "dependencies": {
+    "hot-shots": "^9.2.0",
     "knex": "^2.3.0",
     "mqtt": "^4.3.7",
     "mysql": "^2.18.1",
