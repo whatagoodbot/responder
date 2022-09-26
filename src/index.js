@@ -11,10 +11,12 @@ client.on('connect', () => {
   Object.keys(topics).forEach((topic) => {
     client.subscribe(`${topicPrefix}${topic}`, (err) => {
       logger.info(`subscribed to ${topicPrefix}${topic}`)
-      if (err) logger.error({
-        error: err.toString(),
-        topic
-      })
+      if (err) {
+        logger.error({
+          error: err.toString(),
+          topic
+        })
+      }
     })
   })
 })

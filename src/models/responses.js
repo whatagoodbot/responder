@@ -1,4 +1,4 @@
-import { logger } from "../utils/logging"
+import { logger } from '../utils/logging'
 
 const tableName = 'responses'
 

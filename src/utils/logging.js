@@ -2,11 +2,12 @@ import * as winston from 'winston'
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
-require('winston-syslog').Syslog;
+require('winston-syslog').Syslog // eslint-disable-line
 
 export let logger = null
 
-const { createLogger, transports } = winston.default
+const { format, createLogger, transports } = winston.default
+const { timestamp, combine, errors, json } = format
 
 function buildDevLogger () {
   return createLogger({
