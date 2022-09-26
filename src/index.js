@@ -7,6 +7,7 @@ const client = connect(mqttOptions.host, mqttOptions)
 client.on('connect', () => {
   Object.keys(topics).forEach((topic) => {
     client.subscribe(`${topicPrefix}${topic}`, (err) => {
+      logger.info(`subscribed to ${topicPrefix}${topic}`)
       if (err) logger.error(err, 'err')
     })
   })
@@ -21,3 +22,5 @@ client.on('message', async (topic, message) => {
     client.publish(topics[topic.substring(topicPrefix.length)].replyTopic, JSON.stringify({ error: error.toString() }))
   }
 })
+
+logger.info(process.env.npm_package_version)
