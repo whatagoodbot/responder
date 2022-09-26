@@ -1,5 +1,5 @@
 export default {
-  port: process.env.MSTT_PORT,
+  port: process.env.MQTT_PORT,
   host: `mqtt://${process.env.MQTT_HOSTNAME}`,
   clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
   username: process.env.MQTT_USERNAME,

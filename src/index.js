@@ -2,7 +2,7 @@ import { connect } from 'mqtt'
 import { logger } from './utils/logging.js'
 import mqttOptions from './config.js'
 import { topics, topicPrefix } from './topics.js'
-import { metrics } from './libs/metrics.js'
+import { metrics } from './utils/metrics.js'
 import { performance } from 'perf_hooks'
 
 const client = connect(mqttOptions.host, mqttOptions)
@@ -11,7 +11,12 @@ client.on('connect', () => {
   Object.keys(topics).forEach((topic) => {
     client.subscribe(`${topicPrefix}${topic}`, (err) => {
       logger.info(`subscribed to ${topicPrefix}${topic}`)
-      if (err) logger.error(err, 'err')
+      if (err) {
+        logger.error({
+          error: err.toString(),
+          topic
+        })
+      }
     })
   })
 })
@@ -28,4 +33,10 @@ client.on('message', async (topic, message) => {
   } catch (error) {
     client.publish(topics[topic.substring(topicPrefix.length)].replyTopic, JSON.stringify({ error: error.toString() }))
   }
+})
+
+client.on('error', (err) => {
+  logger.error({
+    error: err.toString()
+  })
 })
