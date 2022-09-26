@@ -1,3 +1,5 @@
+import { logger } from "../utils/logging"
+
 const tableName = 'responses'
 
 export default (knex) => {
@@ -19,6 +21,16 @@ export default (knex) => {
           value
         })
       if (results.length > 0) return true
+      logger.error({
+        warning: 'Failed to insert record',
+        table: 'responses',
+        values: {
+          name,
+          room,
+          type,
+          value
+        }
+      })
       return false
     }
   }

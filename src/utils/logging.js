@@ -1,22 +1,20 @@
 import * as winston from 'winston'
-import { ElasticsearchTransport } from 'winston-elasticsearch'
+import { createRequire } from 'module'
 
-const elasticSearchTransport = new ElasticsearchTransport({
-  level: 'info',
-  clientOpts: {
-    node: 'http://192.168.4.56:9200'
-  }
-})
+const require = createRequire(import.meta.url)
+require('winston-syslog').Syslog;
 
 export let logger = null
 
-const { format, createLogger, transports } = winston.default
-const { timestamp, combine, errors, json } = format
+const { createLogger, transports } = winston.default
 
 function buildDevLogger () {
   return createLogger({
     transports: [
-      elasticSearchTransport,
+      new transports.Syslog({
+        host: process.env.SYSLOG_HOST,
+        type: 'RFC5424'
+      }),
       new transports.Console()
     ]
   })
@@ -25,8 +23,14 @@ function buildDevLogger () {
 function buildProdLogger () {
   return createLogger({
     format: combine(timestamp(), errors({ stack: true }), json()),
-    defaultMeta: { service: 'responder' },
-    transports: [new transports.Console()]
+    defaultMeta: { service: process.env.npm_package_name },
+    transports: [
+      new transports.Syslog({
+        host: process.env.SYSLOG_HOST,
+        type: 'RFC5424'
+      }),
+      new transports.Console()
+    ]
   })
 }
 
