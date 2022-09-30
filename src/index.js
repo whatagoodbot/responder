@@ -22,7 +22,7 @@ const subscribe = () => {
 const reshapeMeta = (requestPayload) => {
   const sentMeta = requestPayload?.meta
   delete requestPayload?.meta
-  return {...requestPayload, ...sentMeta}
+  return { ...requestPayload, ...sentMeta }
 }
 if (broker.client.connected) {
   subscribe()
@@ -39,7 +39,7 @@ broker.client.on('message', async (topic, data) => {
     requestPayload = JSON.parse(data.toString())
     const validatedRequest = broker.responder[topicName].request.validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-    
+
     const validatedResponse = broker.responder[topicName].response.validate({
       payload: await topics[topicName].responder(requestPayload),
       meta: reshapeMeta(requestPayload)
