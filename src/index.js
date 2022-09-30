@@ -5,7 +5,7 @@ import { metrics } from './utils/metrics.js'
 import { performance } from 'perf_hooks'
 import { stringsDb } from './models/index.js'
 
-broker.client.on('connect', () => {
+const subscribe = () => {
   Object.keys(topics).forEach((topic) => {
     broker.client.subscribe(`${topicPrefix}${topic}`, (err) => {
       logger.info(`subscribed to ${topicPrefix}${topic}`)
@@ -17,7 +17,13 @@ broker.client.on('connect', () => {
       }
     })
   })
-})
+}
+
+if (broker.client.connected) {
+  subscribe()
+} else {
+  broker.client.on('connect', subscribe)
+}
 
 broker.client.on('message', async (topic, data) => {
   const startTime = performance.now()
