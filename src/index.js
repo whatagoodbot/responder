@@ -19,6 +19,11 @@ const subscribe = () => {
   })
 }
 
+const reshapeMeta = (requestPayload) => {
+  const sentMeta = requestPayload?.meta
+  delete requestPayload?.meta
+  return {...requestPayload, ...sentMeta}
+}
 if (broker.client.connected) {
   subscribe()
 } else {
@@ -34,14 +39,10 @@ broker.client.on('message', async (topic, data) => {
     requestPayload = JSON.parse(data.toString())
     const validatedRequest = broker.responder[topicName].request.validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-
-    const sentMeta = requestPayload?.meta
-    delete requestPayload?.meta
-    const meta = {...requestPayload, ...sentMeta}
     
     const validatedResponse = broker.responder[topicName].response.validate({
       payload: await topics[topicName].responder(requestPayload),
-      meta
+      meta: reshapeMeta(requestPayload)
     })
     if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
     broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
@@ -52,7 +53,7 @@ broker.client.on('message', async (topic, data) => {
         errors: error.message,
         message: await stringsDb.get('somethingWentWrong')
       },
-      meta
+      meta: reshapeMeta(requestPayload)
     })
     metrics.count('error', { topicName })
     broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
