@@ -1,15 +1,13 @@
-import { connect } from 'mqtt'
+import broker from 'message-broker'
 import { logger } from './utils/logging.js'
-import mqttOptions from './config.js'
 import { topics, topicPrefix } from './topics.js'
 import { metrics } from './utils/metrics.js'
 import { performance } from 'perf_hooks'
+import { stringsDb } from './models/index.js'
 
-const client = connect(mqttOptions.host, mqttOptions)
-
-client.on('connect', () => {
+broker.client.on('connect', () => {
   Object.keys(topics).forEach((topic) => {
-    client.subscribe(`${topicPrefix}${topic}`, (err) => {
+    broker.client.subscribe(`${topicPrefix}${topic}`, (err) => {
       logger.info(`subscribed to ${topicPrefix}${topic}`)
       if (err) {
         logger.error({
@@ -21,21 +19,37 @@ client.on('connect', () => {
   })
 })
 
-client.on('message', async (topic, message) => {
+broker.client.on('message', async (topic, data) => {
   const startTime = performance.now()
+  const topicName = topic.substring(topicPrefix.length)
+  let requestPayload
   try {
-    metrics.count('receivedMessage', { topic })
-    const request = JSON.parse(message.toString())
-    const response = await topics[topic.substring(topicPrefix.length)].responder(request)
-    const endTime = performance.now()
-    metrics.timer('responseTime', endTime - startTime, { topic })
-    client.publish(topics[topic.substring(topicPrefix.length)].replyTopic, JSON.stringify({ request, response }))
+    metrics.count('receivedMessage', { topicName })
+    requestPayload = JSON.parse(data.toString())
+    const validatedRequest = broker.responder[topicName].request.validate(requestPayload)
+    if (validatedRequest.errors) throw { message: validatedRequest.errors }
+
+    const validatedResponse = broker.responder[topicName].response.validate({
+      payload: await topics[topicName].responder(requestPayload),
+      meta: requestPayload
+    })
+    if (validatedResponse.errors) throw { message: validatedResponse.errors }
+    broker.client.publish(topics[topicName].replyTopic, JSON.stringify( validatedResponse ))
+    metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    client.publish(topics[topic.substring(topicPrefix.length)].replyTopic, JSON.stringify({ error: error.toString() }))
+    const validatedResponse = broker.errors.systemError.response.validate({
+      payload: {
+        errors: error.message,
+        message: await stringsDb.get('somethingWentWrong')
+      },
+      meta: requestPayload
+    })
+    metrics.count('error', { topicName })
+    broker.client.publish(topics[topicName].replyTopic, JSON.stringify( validatedResponse ))
   }
 })
 
-client.on('error', (err) => {
+broker.client.on('error', (err) => {
   logger.error({
     error: err.toString()
   })
