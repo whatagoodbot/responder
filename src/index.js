@@ -27,14 +27,14 @@ broker.client.on('message', async (topic, data) => {
     metrics.count('receivedMessage', { topicName })
     requestPayload = JSON.parse(data.toString())
     const validatedRequest = broker.responder[topicName].request.validate(requestPayload)
-    if (validatedRequest.errors) throw { message: validatedRequest.errors }
+    if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
 
     const validatedResponse = broker.responder[topicName].response.validate({
       payload: await topics[topicName].responder(requestPayload),
       meta: requestPayload
     })
-    if (validatedResponse.errors) throw { message: validatedResponse.errors }
-    broker.client.publish(topics[topicName].replyTopic, JSON.stringify( validatedResponse ))
+    if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
+    broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
     const validatedResponse = broker.errors.systemError.response.validate({
@@ -45,7 +45,7 @@ broker.client.on('message', async (topic, data) => {
       meta: requestPayload
     })
     metrics.count('error', { topicName })
-    broker.client.publish(topics[topicName].replyTopic, JSON.stringify( validatedResponse ))
+    broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
   }
 })
 
