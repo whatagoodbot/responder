@@ -35,9 +35,13 @@ broker.client.on('message', async (topic, data) => {
     const validatedRequest = broker.responder[topicName].request.validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
 
+    const sentMeta = requestPayload?.meta
+    delete requestPayload?.meta
+    const meta = {...requestPayload, ...sentMeta}
+    
     const validatedResponse = broker.responder[topicName].response.validate({
       payload: await topics[topicName].responder(requestPayload),
-      meta: requestPayload
+      meta
     })
     if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
     broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
@@ -48,7 +52,7 @@ broker.client.on('message', async (topic, data) => {
         errors: error.message,
         message: await stringsDb.get('somethingWentWrong')
       },
-      meta: requestPayload
+      meta
     })
     metrics.count('error', { topicName })
     broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
