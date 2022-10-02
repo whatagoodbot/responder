@@ -48,7 +48,7 @@ broker.client.on('message', async (topic, data) => {
     broker.client.publish(topics[topicName].replyTopic, JSON.stringify(validatedResponse))
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    const validatedResponse = broker.errors.systemError.response.validate({
+    const validatedResponse = broker.errors.systemError.validate({
       payload: {
         errors: error.message,
         message: await stringsDb.get('somethingWentWrong')
