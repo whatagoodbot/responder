@@ -37,16 +37,18 @@ broker.client.on('message', async (topic, data) => {
   const startTime = performance.now()
   const topicName = topic.substring(topicPrefix.length)
   let requestPayload
+  let reshapedMeta
   try {
     metrics.count('receivedMessage', { topicName })
     requestPayload = JSON.parse(data.toString())
+    reshapedMeta = reshapeMeta(requestPayload)
     const validatedRequest = broker[topicName].validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
     const processedResponse = await controllers[topicName](requestPayload)
     if (!processedResponse) return
     const validatedResponse = broker[broadcastTopic].validate({
       response: processedResponse,
-      meta: reshapeMeta(requestPayload)
+      meta: reshapedMeta
     })
     if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
 
@@ -55,14 +57,13 @@ broker.client.on('message', async (topic, data) => {
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
     console.log(error.message)
-    // TODO: This should probably be a broadcast and not a separate function here
     requestPayload.error = error.message
     const validatedResponse = broker[broadcastTopic].validate({
       response: await controllers.responseRead({
         key: 'somethingWentWrong',
         category: 'system'
       }),
-      meta: reshapeMeta(requestPayload)
+      meta: reshapedMeta
     })
     metrics.count('error', { topicName })
     broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))

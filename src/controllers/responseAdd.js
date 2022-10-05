@@ -10,5 +10,4 @@ export default async (payload) => {
       message: `${intro.value} ${payload.key}`
     }
   }
-  return { success: '' }
 }
