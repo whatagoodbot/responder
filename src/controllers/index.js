@@ -1,9 +1,11 @@
-import getResponse from './getResponse.js'
-import getAllResponses from './getAllResponses.js'
-import addResponse from './addResponse.js'
+import chatMessage from './chatMessage.js'
+import responseAdd from './responseAdd.js'
+import responseRead from './responseRead.js'
+import responseReadAll from './responseReadAll.js'
 
 export default {
-  getResponse,
-  getAllResponses,
-  addResponse
+  chatMessage,
+  responseAdd,
+  responseRead,
+  responseReadAll
 }
