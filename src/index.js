@@ -54,7 +54,7 @@ broker.client.on('message', async (topic, data) => {
 
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    console.log(error.message[0])
+    console.log(error.message)
     // TODO: This should probably be a broadcast and not a separate function here
     requestPayload.error = error.message
     const validatedResponse = broker[broadcastTopic].validate({

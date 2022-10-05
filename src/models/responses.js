@@ -17,7 +17,6 @@ export default (knex) => {
         .where(queryBuilder => {
           if (name) {
             if (onlyMatchedName) {
-              console.log('here')
               queryBuilder.andWhere('name', name)
             } else {
               queryBuilder.andWhere('name', name).orWhereNull('name')
