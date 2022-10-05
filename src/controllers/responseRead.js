@@ -11,7 +11,7 @@ export default async (payload) => {
   metrics.count('getResponse', payload)
   const replies = await responsesDb.get(payload.room, payload.key, payload.category)
   let reply
-  if (payload.category === 'greeting') {
+  if (payload.category === 'userGreeting') {
     const greetingMessages = replies.filter(reply => {
       return reply.type === 'text'
     })
@@ -29,6 +29,14 @@ export default async (payload) => {
     if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value
     if (greetingImages.length) returnPayload.image = getRandomString(greetingImages).value
     return returnPayload
+  } else if (payload.category === 'roomGreeting') {
+    const roomGreeting = await responsesDb.get(payload.room, payload.room, payload.category)
+    if (roomGreeting.length) {
+      reply = getRandomString(roomGreeting)
+      return {
+        [typeMapping[reply.type]]: reply.value
+      }
+    }
   } else {
     reply = getRandomString(replies)
     return {

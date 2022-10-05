@@ -1,7 +1,7 @@
 
 export const up = (knex) => {
   return knex.schema.table('responses', table => {
-    table.enu('category', ['general', 'sentience', 'system', 'greeting', 'songChoice', 'artistChoice']).notNullable().default('general')
+    table.enu('category', ['general', 'sentience', 'system', 'userGreeting', 'roomGreeting', 'songChoice', 'artistChoice']).notNullable().default('general')
   })
 }
 
