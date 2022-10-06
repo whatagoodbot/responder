@@ -7,7 +7,7 @@ const typeMapping = {
   text: 'message'
 }
 
-export default async (payload) => {
+const read = async (payload) => {
   metrics.count('getResponse', payload)
   const replies = await responsesDb.get(payload.room, payload.key, payload.category)
   let reply
@@ -37,10 +37,58 @@ export default async (payload) => {
         [typeMapping[reply.type]]: reply.value
       }
     }
+  } else if (payload.category === 'badgeReaction') {
+    if (replies.length) {
+      reply = getRandomString(replies)
+      return {
+        [typeMapping[reply.type]]: reply.value
+      }
+    }
+  } else if (payload.prefix) {
+    reply = getRandomString(replies)
+    if (!reply) {
+      return await read({
+        key: 'aliasUnknown',
+        category: 'system'
+      })
+    }
+    if (reply.type === 'image') {
+      return {
+        image: reply.value,
+        message: payload.prefix
+      }
+    }
+    return {
+      message: `${payload.prefix} ${reply.value}`
+    }
+  } else if (payload.suffix) {
+    reply = getRandomString(replies)
+    if (!reply) {
+      return await read({
+        key: 'aliasUnknown',
+        category: 'system'
+      })
+    }
+    if (reply.type === 'image') {
+      return {
+        image: reply.value,
+        message: payload.suffix
+      }
+    }
+    return {
+      message: `${reply.value} ${payload.suffix}`
+    }
   } else {
     reply = getRandomString(replies)
+    if (!reply) {
+      return await read({
+        key: 'aliasUnknown',
+        category: 'system'
+      })
+    }
     return {
       [typeMapping[reply.type]]: reply.value
     }
   }
 }
+export default read
