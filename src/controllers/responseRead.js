@@ -28,21 +28,21 @@ const read = async (payload) => {
     }
     if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value
     if (greetingImages.length) returnPayload.image = getRandomString(greetingImages).value
-    return returnPayload
+    return [returnPayload]
   } else if (payload.category === 'roomGreeting') {
     const roomGreeting = await responsesDb.get(payload.room, payload.room, payload.category)
     if (roomGreeting.length) {
       reply = getRandomString(roomGreeting)
-      return {
+      return [{
         [typeMapping[reply.type]]: reply.value
-      }
+      }]
     }
   } else if (payload.category === 'badgeReaction') {
     if (replies.length) {
       reply = getRandomString(replies)
-      return {
+      return [{
         [typeMapping[reply.type]]: reply.value
-      }
+      }]
     }
   } else if (payload.prefix) {
     reply = getRandomString(replies)
@@ -58,9 +58,9 @@ const read = async (payload) => {
         message: payload.prefix
       }
     }
-    return {
+    return [{
       message: `${payload.prefix} ${reply.value}`
-    }
+    }]
   } else if (payload.suffix) {
     reply = getRandomString(replies)
     if (!reply) {
@@ -75,9 +75,9 @@ const read = async (payload) => {
         message: payload.suffix
       }
     }
-    return {
+    return [{
       message: `${reply.value} ${payload.suffix}`
-    }
+    }]
   } else {
     reply = getRandomString(replies)
     if (!reply) {
@@ -86,9 +86,9 @@ const read = async (payload) => {
         category: 'system'
       })
     }
-    return {
+    return [{
       [typeMapping[reply.type]]: reply.value
-    }
+    }]
   }
 }
 export default read

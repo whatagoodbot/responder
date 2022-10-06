@@ -3,6 +3,7 @@ import controllers from './controllers/index.js'
 import { logger } from './utils/logging.js'
 import { metrics } from './utils/metrics.js'
 import { performance } from 'perf_hooks'
+import { delay } from './utils/timing.js'
 
 const topicPrefix = `${process.env.NODE_ENV}/`
 const broadcastTopic = 'broadcast'
@@ -44,15 +45,20 @@ broker.client.on('message', async (topic, data) => {
     reshapedMeta = reshapeMeta(requestPayload)
     const validatedRequest = broker[topicName].validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-    const processedResponse = await controllers[topicName](requestPayload)
-    if (!processedResponse) return
-    const validatedResponse = broker[broadcastTopic].validate({
-      response: processedResponse,
-      meta: reshapedMeta
-    })
-    if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
+    const processedResponses = await controllers[topicName](requestPayload)
+    if (!processedResponses || !processedResponses.length) return
 
-    broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
+    for (const current in processedResponses) {
+      const processedResponse = processedResponses[current]
+      const validatedResponse = broker[broadcastTopic].validate({
+        response: processedResponse,
+        meta: reshapedMeta
+      })
+      console.log(validatedResponse)
+      if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
+      broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
+      await delay(250)
+    }
 
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {

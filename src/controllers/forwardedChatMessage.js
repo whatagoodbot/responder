@@ -37,8 +37,8 @@ export default async (payload) => {
     })
 
     const reply = getRandomString(await responsesDb.get(payload.room, responseKeyword, 'sentience', hasMatchedKeyword))
-    return {
+    return [{
       [typeMapping[reply.type]]: reply.value
-    }
+    }]
   }
 }

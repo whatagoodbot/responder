@@ -7,9 +7,9 @@ export default async (payload) => {
   const replies = await responsesDb.getAll(payload.room, payload.category)
   const intro = getRandomString(await responsesDb.get(null, 'aliasIntro', 'system'))
 
-  return {
+  return [{
     message: `${intro.value} ${replies.map((reply) => {
       return reply.name
     }).join(', ')}`
-  }
+  }]
 }

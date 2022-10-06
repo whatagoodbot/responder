@@ -7,8 +7,8 @@ export default async (payload) => {
   const result = await responsesDb.add(payload.key, payload.room, payload.type, payload.value, payload.category)
   if (result) {
     const intro = getRandomString(await responsesDb.get(null, `${payload.category}Added`, 'system'))
-    return {
+    return [{
       message: `${intro.value} ${payload.key}`
-    }
+    }]
   }
 }
