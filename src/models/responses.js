@@ -28,6 +28,7 @@ export default (knex) => {
     },
     getAll: async (room, category = 'general') => {
       return await knex(tableName)
+        .distinct('name')
         .where({ category })
         .where((queryBuilder) => {
           if (room) {
