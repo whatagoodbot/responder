@@ -19,10 +19,10 @@ const read = async (payload) => {
       return reply.type === 'image'
     })
     const returnPayload = {
-      message: `@${payload.userNickname} is here. `,
+      message: `@${payload.nickname} is here. `,
       mention: {
         userId: payload.key,
-        userNickname: payload.userNickname,
+        nickname: payload.nickname,
         position: 0
       }
     }
