@@ -10,7 +10,7 @@ const typeMapping = {
 export default async (payload) => {
   metrics.count('songPlayed', payload)
   const messageUntilMention = `💽 ${payload.artist}: ${payload.title} - played by @`
-  let songChoiceGloat
+  let songChoiceGloat = ''
   if (payload.dj.isBot) {
     songChoiceGloat = getRandomString(await responsesDb.get(null, 'songChoiceGloat', 'sentience'))
   }

@@ -25,6 +25,7 @@ export default (knex) => {
             queryBuilder.whereNull('name')
           }
         })
+        .orderBy('id', 'ASC')
     },
     getAll: async (room, category = 'general') => {
       return await knex(tableName)

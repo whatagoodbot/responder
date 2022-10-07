@@ -79,16 +79,25 @@ const read = async (payload) => {
       message: `${reply.value} ${payload.suffix}`
     }]
   } else {
-    reply = getRandomString(replies)
-    if (!reply) {
-      return await read({
-        key: 'aliasUnknown',
-        category: 'system'
-      })
+    if (payload.position >= 0) {
+      reply = replies[payload.position]
+      if (reply) {
+        return [{
+          [typeMapping[reply.type]]: reply.value
+        }]
+      }
+    } else {
+      reply = getRandomString(replies)
+      if (!reply) {
+        return await read({
+          key: 'aliasUnknown',
+          category: 'system'
+        })
+      }
+      return [{
+        [typeMapping[reply.type]]: reply.value
+      }]
     }
-    return [{
-      [typeMapping[reply.type]]: reply.value
-    }]
   }
 }
 export default read

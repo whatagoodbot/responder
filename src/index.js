@@ -54,7 +54,6 @@ broker.client.on('message', async (topic, data) => {
         response: processedResponse,
         meta: reshapedMeta
       })
-      console.log(validatedResponse)
       if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
       broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
       await delay(250)
