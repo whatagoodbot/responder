@@ -1,4 +1,4 @@
-import { responsesDb } from '../models/index.js'
+import { configDb, responsesDb } from '../models/index.js'
 import { metrics } from '../utils/metrics.js'
 import getRandomString from '../utils/getRandomString.js'
 
@@ -9,6 +9,8 @@ const typeMapping = {
 
 export default async (payload) => {
   metrics.count('songPlayed', payload)
+  const songAnnouncer = await configDb.get('songAnnouncer')
+  if (songAnnouncer.value !== 'true') return
   const messageUntilMention = `💽 ${payload.artist}: ${payload.title} - played by @`
   let songChoiceGloat = ''
   if (payload.dj.isBot) {

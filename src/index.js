@@ -45,7 +45,7 @@ broker.client.on('message', async (topic, data) => {
     reshapedMeta = reshapeMeta(requestPayload)
     const validatedRequest = broker[topicName].validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-    const processedResponses = await controllers[topicName](requestPayload)
+    const processedResponses = await controllers[topicName](requestPayload, reshapedMeta)
     if (!processedResponses || !processedResponses.length) return
 
     for (const current in processedResponses) {

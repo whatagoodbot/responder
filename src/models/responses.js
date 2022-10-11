@@ -38,6 +38,17 @@ export default (knex) => {
           }
         })
     },
+    getMany: async (room, names, category = 'general') => {
+      return await knex(tableName)
+        .where({ category })
+        .whereIn('name', names)
+        .where((queryBuilder) => {
+          if (room) {
+            queryBuilder.where('room', room)
+            queryBuilder.orWhereNull('room')
+          }
+        })
+    },
     add: async (name, room, type, value, category = 'general') => {
       const results = await knex(tableName)
         .insert({

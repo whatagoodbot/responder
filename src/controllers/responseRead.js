@@ -19,11 +19,11 @@ const read = async (payload) => {
       return reply.type === 'image'
     })
     const returnPayload = {
-      message: `@${payload.nickname} is here. `,
+      message: `👋 @${payload.nickname} is here. `,
       mention: {
         userId: payload.key,
         nickname: payload.nickname,
-        position: 0
+        position: 2
       }
     }
     if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value

@@ -4,6 +4,7 @@ import responseRead from './responseRead.js'
 import responseReadAll from './responseReadAll.js'
 import songPlayed from './songPlayed.js'
 import requestToBroadcast from './requestToBroadcast.js'
+import reportStats from './reportStats.js'
 
 export default {
   forwardedChatMessage,
@@ -11,5 +12,6 @@ export default {
   responseRead,
   responseReadAll,
   songPlayed,
-  requestToBroadcast
+  requestToBroadcast,
+  reportStats
 }
