@@ -18,11 +18,11 @@ export default async (payload) => {
   }
   const returnPayloads = [{
     message: `${messageUntilMention}${payload.dj.nickname}. ${songChoiceGloat}`,
-    mention: {
+    mentions: [{
       userId: payload.dj.userId,
       nickname: payload.dj.nickname,
       position: messageUntilMention.length - 1
-    }
+    }]
   }]
   const songResponse = await responsesDb.get(payload.room, payload.title.toLowerCase(), 'songChoice', true)
   if (songResponse.length > 0) {

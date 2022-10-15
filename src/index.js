@@ -37,10 +37,10 @@ if (broker.client.connected) {
 broker.client.on('message', async (topic, data) => {
   const startTime = performance.now()
   const topicName = topic.substring(topicPrefix.length)
+  metrics.count('receivedMessage', { topicName })
   let requestPayload
   let reshapedMeta
   try {
-    metrics.count('receivedMessage', { topicName })
     requestPayload = JSON.parse(data.toString())
     reshapedMeta = reshapeMeta(requestPayload)
     const validatedRequest = broker[topicName].validate(requestPayload)
@@ -50,18 +50,19 @@ broker.client.on('message', async (topic, data) => {
 
     for (const current in processedResponses) {
       const processedResponse = processedResponses[current]
+      processedResponse.messageId = reshapedMeta.messageId
       const validatedResponse = broker[broadcastTopic].validate({
-        response: processedResponse,
+        ...processedResponse,
         meta: reshapedMeta
       })
       if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
       broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
-      await delay(250)
+      await delay(150)
     }
 
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    console.log(error.message)
+    logger.error(error.message)
     requestPayload.error = error.message
     const validatedResponse = broker[broadcastTopic].validate({
       response: await controllers.responseRead({
