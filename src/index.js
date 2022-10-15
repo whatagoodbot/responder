@@ -3,9 +3,10 @@ import controllers from './controllers/index.js'
 import { logger } from './utils/logging.js'
 import { metrics } from './utils/metrics.js'
 import { performance } from 'perf_hooks'
-import { stringsDb } from './models/index.js'
+import { delay } from './utils/timing.js'
 
 const topicPrefix = `${process.env.NODE_ENV}/`
+const broadcastTopic = 'broadcast'
 
 const subscribe = () => {
   Object.keys(controllers).forEach((topic) => {
@@ -36,29 +37,42 @@ if (broker.client.connected) {
 broker.client.on('message', async (topic, data) => {
   const startTime = performance.now()
   const topicName = topic.substring(topicPrefix.length)
+  metrics.count('receivedMessage', { topicName })
   let requestPayload
+  let reshapedMeta
   try {
-    metrics.count('receivedMessage', { topicName })
     requestPayload = JSON.parse(data.toString())
-    const validatedRequest = broker[topicName].request.validate(requestPayload)
+    reshapedMeta = reshapeMeta(requestPayload)
+    const validatedRequest = broker[topicName].validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-    const validatedResponse = broker[topicName].response.validate({
-      payload: await controllers[topicName](requestPayload),
-      meta: reshapeMeta(requestPayload)
-    })
-    if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
-    broker.client.publish(`${topic}Reply`, JSON.stringify(validatedResponse))
+    const processedResponses = await controllers[topicName](requestPayload, reshapedMeta)
+    if (!processedResponses || !processedResponses.length) return
+
+    for (const current in processedResponses) {
+      const processedResponse = processedResponses[current]
+      processedResponse.messageId = reshapedMeta.messageId
+      const validatedResponse = broker[broadcastTopic].validate({
+        ...processedResponse,
+        meta: reshapedMeta
+      })
+      if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
+      broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
+      await delay(150)
+    }
+
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    const validatedResponse = broker.systemError.validate({
-      payload: {
-        errors: error.message,
-        message: await stringsDb.get('somethingWentWrong')
-      },
-      meta: reshapeMeta(requestPayload)
+    logger.error(error.message)
+    requestPayload.error = error.message
+    const validatedResponse = broker[broadcastTopic].validate({
+      response: await controllers.responseRead({
+        key: 'somethingWentWrong',
+        category: 'system'
+      }),
+      meta: reshapedMeta
     })
     metrics.count('error', { topicName })
-    broker.client.publish(`${topic}Reply`, JSON.stringify(validatedResponse))
+    broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
   }
 })
 

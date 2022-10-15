@@ -1,9 +1,19 @@
-import getResponse from './getResponse.js'
-import getAllResponses from './getAllResponses.js'
-import addResponse from './addResponse.js'
+import forwardedChatMessage from './forwardedChatMessage.js'
+import responseAdd from './responseAdd.js'
+import responseRead from './responseRead.js'
+import responseReadAll from './responseReadAll.js'
+import songPlayed from './songPlayed.js'
+import requestToBroadcast from './requestToBroadcast.js'
+import reportStats from './reportStats.js'
+import themeUpdate from './themeUpdate.js'
 
 export default {
-  getResponse,
-  getAllResponses,
-  addResponse
+  forwardedChatMessage,
+  responseAdd,
+  responseRead,
+  responseReadAll,
+  songPlayed,
+  requestToBroadcast,
+  reportStats,
+  themeUpdate
 }

@@ -1,12 +1,12 @@
 
 export const up = (knex) => {
   return knex.schema.table('responses', table => {
-    table.boolean('botResponse').default(0)
+    table.enu('category', ['general', 'sentience', 'system', 'userGreeting', 'roomGreeting', 'songChoice', 'artistChoice', 'badgeReaction']).notNullable().default('general')
   })
 }
 
 export const down = (knex) => {
   return knex.schema.table('responses', table => {
-    table.dropColumn('botResponse')
+    table.dropColumn('category')
   })
 }
