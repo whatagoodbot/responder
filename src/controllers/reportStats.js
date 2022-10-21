@@ -2,30 +2,30 @@ import { responsesDb } from '../models/index.js'
 import { metrics } from '../utils/metrics.js'
 import { getUser } from '../libs/grpc.js'
 
-export default async (payload, meta) => {
+export default async (payload) => {
   metrics.count('reportStats', payload)
   const strings = {}
-  const results = await responsesDb.getMany(null, ['statsIntroThisMonth', 'statsIntroLastMonth', 'statsIntroAllTime', 'statsHas', 'spinsOutro', 'dopeOutro', 'nopeOutro', 'starOutro', 'statsRoom', 'spinsIcon', 'starIcon', 'dopeIcon', 'nopeIcon', 'popularTrackIntro', 'popularTrackScore', 'leaderboardIntro', 'leaderboardFooter'], 'system')
+  const results = await responsesDb.getMany(null, ['statsIntroThisMonth', 'statsIntroLastMonth', 'statsIntroAllTime', 'statsHas', 'spinsOutro', 'dopesOutro', 'nopesOutro', 'starsOutro', 'statsRoom', 'spinsIcon', 'starsIcon', 'dopesIcon', 'nopesIcon', 'popularTrackIntro', 'popularTrackScore', 'leaderboardIntro', 'leaderboardFooter'], 'system')
   results.forEach(string => {
     strings[string.name] = string.value
   })
 
   const outroMapping = {
-    dope: 'dopeOutro',
-    nope: 'nopeOutro',
-    star: 'starOutro',
+    dopes: 'dopesOutro',
+    nopes: 'nopesOutro',
+    stars: 'starsOutro',
     spins: 'spinsOutro'
   }
 
   const iconMapping = {
-    dope: 'dopeIcon',
-    nope: 'nopeIcon',
-    star: 'starIcon',
+    dopes: 'dopesIcon',
+    nopes: 'nopesIcon',
+    stars: 'starsIcon',
     spins: 'spinsIcon'
   }
 
   let intro = ''
-  switch (meta.stat.period) {
+  switch (payload.period) {
     case 'lastmonth':
       intro = strings.statsIntroLastMonth
       break
@@ -36,14 +36,14 @@ export default async (payload, meta) => {
       intro = strings.statsIntroThisMonth
       break
   }
-  if (meta.stat.type === 'leaderboard') {
+  if (payload.type === 'leaderboard') {
     const tableMessages = [{ message: `${intro} ${strings.leaderboardIntro}` }]
     const positionIcons = [
       '👑',
-      '2️⃣',
-      '3️⃣',
-      '4️⃣',
-      '5️⃣'
+      '2️⃣ ',
+      '3️⃣ ',
+      '4️⃣ ',
+      '5️⃣ '
     ]
     payload.leaderboard = payload.leaderboard.slice(0, 5)
 
@@ -63,17 +63,17 @@ export default async (payload, meta) => {
   } else {
     let statisticsReport = ` ${strings.statsHas} ${strings[iconMapping[payload.type]]} ${payload.stats[payload.type]} ${strings[outroMapping[payload.type]]}`
 
-    if (meta.stat.type === 'all') {
-      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starIcon} ${payload.stats.star} ${strings.starOutro} ${strings.dopeIcon} ${payload.stats.dope} ${strings.dopeOutro} ${strings.nopeIcon} ${payload.stats.nope} ${strings.nopeOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} ${strings.popularTrackScore} ${payload.stats.popular.score}`
-    } else if (meta.stat.type === 'popular') {
+    if (payload.type === 'stats') {
+      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starsIcon} ${payload.stats.stars} ${strings.starsOutro} ${strings.dopesIcon} ${payload.stats.dopes} ${strings.dopesOutro} ${strings.nopesIcon} ${payload.stats.nopes} ${strings.nopesOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} ${strings.popularTrackScore} ${payload.stats.popular.score}`
+    } else if (payload.type === 'mostpopular') {
       statisticsReport = `s ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} ${strings.popularTrackScore} ${payload.stats.popular.score}`
     }
-    if (meta.stat.filter === 'user') {
+    if (payload.filter === 'user') {
       return [{
-        message: `${intro} @${meta.user.nickname}${statisticsReport}`,
+        message: `${intro} @${payload.user.nickname}${statisticsReport}`,
         mentions: [{
-          userId: meta.user.id,
-          nickname: meta.user.nickname,
+          userId: payload.user.id,
+          nickname: payload.user.nickname,
           position: intro.length + 1
         }]
       }]

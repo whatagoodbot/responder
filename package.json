@@ -1,11 +1,12 @@
 {
   "name": "responder",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "NODE_ENV=development nodemon -r dotenv/config src/index.js",
+    "prod": "NODE_ENV=production nodemon -r dotenv/config src/index.js",
     "lint": "standard",
     "lint:fix": "standard --fix",
     "start": "node src/index.js",
@@ -43,7 +44,7 @@
     "@grpc/proto-loader": "^0.7.3",
     "hot-shots": "^9.2.0",
     "knex": "^2.3.0",
-    "message-broker": "github:whatagoodbot/message-broker",
+    "message-broker": "github:whatagoodbot/message-broker#v3.0.0",
     "mysql": "^2.18.1",
     "winston": "^3.8.2",
     "winston-syslog": "^2.6.0"

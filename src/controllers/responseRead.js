@@ -9,7 +9,7 @@ const typeMapping = {
 
 const read = async (payload) => {
   metrics.count('getResponse', payload)
-  const replies = await responsesDb.get(payload.room, payload.key, payload.category)
+  const replies = await responsesDb.get(payload?.room?.slug, payload.key, payload.category)
   let reply
   if (payload.category === 'userGreeting') {
     const greetingMessages = replies.filter(reply => {
@@ -23,14 +23,14 @@ const read = async (payload) => {
       mentions: [{
         userId: payload.key,
         nickname: payload.nickname,
-        position: 2
+        position: 3
       }]
     }
     if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value
     if (greetingImages.length) returnPayload.image = getRandomString(greetingImages).value
     return [returnPayload]
   } else if (payload.category === 'roomGreeting') {
-    const roomGreeting = await responsesDb.get(payload.room, payload.room, payload.category)
+    const roomGreeting = await responsesDb.get(payload?.room?.slug, payload?.room?.slug, payload.category)
     if (roomGreeting.length) {
       reply = getRandomString(roomGreeting)
       return [{
