@@ -70,10 +70,10 @@ export default async (payload) => {
     }
     if (payload.filter === 'user') {
       return [{
-        message: `${intro} @${user.nickname}${statisticsReport}`,
+        message: `${intro} @${payload.user.nickname}${statisticsReport}`,
         mentions: [{
-          userId: user.id,
-          nickname: user.nickname,
+          userId: payload.user.id,
+          nickname: payload.user.nickname,
           position: intro.length + 1
         }]
       }]
