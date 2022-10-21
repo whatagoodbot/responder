@@ -1,6 +1,7 @@
 import { configDb, responsesDb } from '../models/index.js'
 import { metrics } from '../utils/metrics.js'
 import getRandomString from '../utils/getRandomString.js'
+import { getUser } from '../libs/grpc.js'
 
 const typeMapping = {
   image: 'image',
@@ -10,21 +11,25 @@ const typeMapping = {
 export default async (payload) => {
   metrics.count('songPlayed', payload)
   const songAnnouncer = await configDb.get('songAnnouncer')
-  if (songAnnouncer.value !== 'true') return
-  const messageUntilMention = `💽 ${payload.artist}: ${payload.title} - played by @`
-  let songChoiceGloat = ''
-  if (payload.dj.isBot) {
-    songChoiceGloat = getRandomString(await responsesDb.get(null, 'songChoiceGloat', 'sentience'))
+  const returnPayloads = []
+  if (songAnnouncer.value === 'true') {
+    const messageUntilMention = `💽 ${payload.nowPlaying.artist}: ${payload.nowPlaying.title} - played by @`
+    let songChoiceGloat = ''
+    if (payload.nowPlaying.isBot) {
+      songChoiceGloat = getRandomString(await responsesDb.get(null, 'songChoiceGloat', 'sentience')).value
+    }
+    const user = await getUser(payload.nowPlaying.dj)
+    returnPayloads.push({
+      message: `${messageUntilMention}${user.name}. ${songChoiceGloat}`,
+      mentions: [{
+        userId: payload.nowPlaying.dj,
+        nickname: user.name,
+        position: messageUntilMention.length - 1
+      }]
+    })
   }
-  const returnPayloads = [{
-    message: `${messageUntilMention}${payload.dj.nickname}. ${songChoiceGloat}`,
-    mentions: [{
-      userId: payload.dj.userId,
-      nickname: payload.dj.nickname,
-      position: messageUntilMention.length - 1
-    }]
-  }]
-  const songResponse = await responsesDb.get(payload.room, payload.title.toLowerCase(), 'songChoice', true)
+  const songResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.title.toLowerCase(), 'songChoice', true)
+  console.log(songResponse)
   if (songResponse.length > 0) {
     metrics.count('songResponse', payload)
     const reply = getRandomString(songResponse)
@@ -32,7 +37,8 @@ export default async (payload) => {
       [typeMapping[reply.type]]: reply.value
     })
   } else {
-    const artistResponse = await responsesDb.get(payload.room, payload.artist.toLowerCase(), 'artistChoice', true)
+    const artistResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.artist.toLowerCase(), 'artistChoice', true)
+    console.log(artistResponse)
     if (artistResponse.length > 0) {
       metrics.count('artistResponse', payload)
       const reply = getRandomString(artistResponse)
@@ -41,5 +47,6 @@ export default async (payload) => {
       })
     }
   }
+  console.log(returnPayloads)
   return returnPayloads
 }
