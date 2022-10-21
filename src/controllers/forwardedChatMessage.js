@@ -10,10 +10,9 @@ const typeMapping = {
 const triggers = [
   'groupie ',
   'mg ',
-  'bot ',
+  ' bot ',
   ' groupie',
-  ' mg',
-  ' bot'
+  ' mg'
 ]
 
 export default async (payload) => {

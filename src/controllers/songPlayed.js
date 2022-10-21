@@ -16,7 +16,7 @@ export default async (payload) => {
     const messageUntilMention = `💽 ${payload.nowPlaying.artist}: ${payload.nowPlaying.title} - played by @`
     let songChoiceGloat = ''
     if (payload.nowPlaying.isBot) {
-      songChoiceGloat = getRandomString(await responsesDb.get(null, 'songChoiceGloat', 'sentience')).value
+      songChoiceGloat = getRandomString(await responsesDb.get(null, 'songChoiceGloat', 'sentience', true)).value
     }
     const user = await getUser(payload.nowPlaying.dj)
     returnPayloads.push({
@@ -29,7 +29,6 @@ export default async (payload) => {
     })
   }
   const songResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.title.toLowerCase(), 'songChoice', true)
-  console.log(songResponse)
   if (songResponse.length > 0) {
     metrics.count('songResponse', payload)
     const reply = getRandomString(songResponse)
@@ -38,7 +37,6 @@ export default async (payload) => {
     })
   } else {
     const artistResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.artist.toLowerCase(), 'artistChoice', true)
-    console.log(artistResponse)
     if (artistResponse.length > 0) {
       metrics.count('artistResponse', payload)
       const reply = getRandomString(artistResponse)
@@ -47,6 +45,5 @@ export default async (payload) => {
       })
     }
   }
-  console.log(returnPayloads)
   return returnPayloads
 }

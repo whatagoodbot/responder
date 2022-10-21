@@ -59,17 +59,16 @@ broker.client.on('message', async (topic, data) => {
 
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
-    console.log(error)
     logger.error(error.message)
-    requestPayload = requestPayload || {
-      messageId: 'ORPHANED'
-    }
-    const validatedResponse = broker.responseRead.validate({
-      key: 'somethingWentWrong',
-      category: 'system',
-      ...requestPayload
-    })
-    metrics.count('error', { topicName })
-    broker.client.publish(`${topicPrefix}responseRead`, JSON.stringify(validatedResponse))
+    // requestPayload = requestPayload || {
+    //   messageId: 'ORPHANED'
+    // }
+    // const validatedResponse = broker.responseRead.validate({
+    //   key: 'somethingWentWrong',
+    //   category: 'system',
+    //   ...requestPayload
+    // })
+    // metrics.count('error', { topicName })
+    // broker.client.publish(`${topicPrefix}responseRead`, JSON.stringify(validatedResponse))
   }
 })
