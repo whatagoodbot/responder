@@ -51,8 +51,8 @@ export default async (payload) => {
       '5️⃣ '
     ]
     payload.leaderboard = payload.leaderboard.slice(0, 5)
-    console.log(payload.leaderboard)
     for (const record in payload.leaderboard) {
+      if (!payload.leaderboard[record].user) return
       const user = await getUser(payload.leaderboard[record].user)
       tableMessages.push({
         topic: 'broadcast',
