@@ -42,5 +42,36 @@ export default async (payload) => {
     return [{
       [typeMapping[reply.type]]: reply.value
     }]
+  } else {
+    const matchStrings = await responsesDb.getAllIncRepeat(payload.room.slug, 'sentienceMatches')
+    const returnPayloads = []
+    matchStrings.forEach(matchString => {
+      const words = matchString.name.split(',')
+      let matchedWords = 0
+      words.forEach(word => {
+        if (payload.chatMessage.toLowerCase().indexOf(word) > -1) {
+          matchedWords++
+        }
+      })
+      if (matchedWords === words.length) {
+        if (matchString.type === 'command') {
+          returnPayloads.push({
+            topic: 'externalRequest',
+            payload: {
+              service: 'piggy',
+              name: matchString.value
+            }
+          })
+        } else {
+          returnPayloads.push({
+            topic: 'broadcast',
+            payload: {
+              [typeMapping[matchString.type]]: matchString.value
+            }
+          })
+        }
+      }
+    })
+    return returnPayloads
   }
 }

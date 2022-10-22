@@ -6,7 +6,6 @@ import { performance } from 'perf_hooks'
 import { delay } from './utils/timing.js'
 
 const topicPrefix = `${process.env.NODE_ENV}/`
-const broadcastTopic = 'broadcast'
 
 const subscribe = () => {
   Object.keys(controllers).forEach((topic) => {
@@ -48,12 +47,12 @@ broker.client.on('message', async (topic, data) => {
     if (!processedResponses || !processedResponses.length) return
     for (const current in processedResponses) {
       const processedResponse = processedResponses[current]
-      const validatedResponse = broker[broadcastTopic].validate({
+      const validatedResponse = broker[processedResponse.topic].validate({
         ...validatedRequest,
-        ...processedResponse
+        ...processedResponse.payload
       })
       if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
-      broker.client.publish(`${topicPrefix}${broadcastTopic}`, JSON.stringify(validatedResponse))
+      broker.client.publish(`${topicPrefix}${processedResponse.topic}`, JSON.stringify(validatedResponse))
       await delay(150)
     }
 

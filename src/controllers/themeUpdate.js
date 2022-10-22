@@ -15,24 +15,33 @@ export default async (payload) => {
   const secondMentionPosition = firstMentionPosition + leader.name.length + strings.themeCaboose.length + 4
   if (payload.trigger === 'stop') {
     return [{
-      message: strings.themeEnd,
-      clearPin: true
+      topic: 'broadcast',
+      payload: {
+        message: strings.themeEnd,
+        clearPin: true
+      }
     }]
   } else {
     return [{
-      message: `${strings.themeCurrent} ${payload.currentTheme}. ${strings.themeOnDeck} ${payload.nextTheme}`,
-      pin: true
+      topic: 'broadcast',
+      payload: {
+        message: `${strings.themeCurrent} ${payload.currentTheme}. ${strings.themeOnDeck} ${payload.nextTheme}`,
+        pin: true
+      }
     }, {
-      message: `${strings.themeLeader} @${leader.name}, ${strings.themeCaboose} @${caboose.name}`,
-      mentions: [{
-        userId: payload.leader,
-        nickname: leader.name,
-        position: firstMentionPosition
-      }, {
-        userId: payload.caboose,
-        nickname: caboose.name,
-        position: secondMentionPosition
-      }]
+      topic: 'broadcast',
+      payload: {
+        message: `${strings.themeLeader} @${leader.name}, ${strings.themeCaboose} @${caboose.name}`,
+        mentions: [{
+          userId: payload.leader,
+          nickname: leader.name,
+          position: firstMentionPosition
+        }, {
+          userId: payload.caboose,
+          nickname: caboose.name,
+          position: secondMentionPosition
+        }]
+      }
     }]
   }
 }

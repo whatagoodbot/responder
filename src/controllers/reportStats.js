@@ -50,12 +50,15 @@ export default async (payload) => {
     for (const record in payload.leaderboard) {
       const user = await getUser(payload.leaderboard[record].user)
       tableMessages.push({
-        message: `${positionIcons[record]} @${user.name} with a score of ${payload.leaderboard[record].score}`,
-        mentions: [{
-          userId: payload.leaderboard[record].user,
-          nickname: user.name,
-          position: positionIcons[record].length + 1
-        }]
+        topic: 'broadcast',
+        payload: {
+          message: `${positionIcons[record]} @${user.name} with a score of ${payload.leaderboard[record].score}`,
+          mentions: [{
+            userId: payload.leaderboard[record].user,
+            nickname: user.name,
+            position: positionIcons[record].length + 1
+          }]
+        }
       })
     }
     tableMessages.push({ message: strings.leaderboardFooter })
@@ -70,16 +73,22 @@ export default async (payload) => {
     }
     if (payload.filter === 'user') {
       return [{
-        message: `${intro} @${payload.user.nickname}${statisticsReport}`,
-        mentions: [{
-          userId: payload.user.id,
-          nickname: payload.user.nickname,
-          position: intro.length + 1
-        }]
+        topic: 'broadcast',
+        payload: {
+          message: `${intro} @${payload.user.nickname}${statisticsReport}`,
+          mentions: [{
+            userId: payload.user.id,
+            nickname: payload.user.nickname,
+            position: intro.length + 1
+          }]
+        }
       }]
     } else {
       return [{
-        message: `${intro} ${strings.statsRoom}${statisticsReport}`
+        topic: 'broadcast',
+        payload: {
+          message: `${intro} ${strings.statsRoom}${statisticsReport}`
+        }
       }]
     }
   }

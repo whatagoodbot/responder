@@ -8,8 +8,11 @@ export default async (payload) => {
   const intro = getRandomString(await responsesDb.get(null, 'aliasIntro', 'system'))
 
   return [{
-    message: `${intro.value} ${replies.map((reply) => {
-      return reply.name
-    }).join(', ')}`
+    topic: 'broadcast',
+    payload: {
+      message: `${intro.value} ${replies.map((reply) => {
+        return reply.name
+      }).join(', ')}`
+    }
   }]
 }
