@@ -37,7 +37,12 @@ export default async (payload) => {
       break
   }
   if (payload.type === 'leaderboard') {
-    const tableMessages = [{ message: `${intro} ${strings.leaderboardIntro}` }]
+    const tableMessages = [{
+      topic: 'broadcast',
+      payload: {
+        message: `${intro} ${strings.leaderboardIntro}`
+      }
+    }]
     const positionIcons = [
       '👑',
       '2️⃣ ',
@@ -46,7 +51,7 @@ export default async (payload) => {
       '5️⃣ '
     ]
     payload.leaderboard = payload.leaderboard.slice(0, 5)
-
+    console.log(payload.leaderboard)
     for (const record in payload.leaderboard) {
       const user = await getUser(payload.leaderboard[record].user)
       tableMessages.push({
@@ -61,7 +66,12 @@ export default async (payload) => {
         }
       })
     }
-    tableMessages.push({ message: strings.leaderboardFooter })
+    tableMessages.push({
+      topic: 'broadcast',
+      payload: {
+        message: strings.leaderboardFooter
+      }
+    })
     return tableMessages
   } else {
     let statisticsReport = ` ${strings.statsHas} ${strings[iconMapping[payload.type]]} ${payload.stats[payload.type]} ${strings[outroMapping[payload.type]]}`
