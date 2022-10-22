@@ -40,7 +40,10 @@ export default async (payload) => {
 
     const reply = getRandomString(await responsesDb.get(payload.room.slug, responseKeyword, 'sentience', hasMatchedKeyword))
     return [{
-      [typeMapping[reply.type]]: reply.value
+      topic: 'broadcast',
+      payload: {
+        [typeMapping[reply.type]]: reply.value
+      }
     }]
   } else {
     const matchStrings = await responsesDb.getAllIncRepeat(payload.room.slug, 'sentienceMatches')
