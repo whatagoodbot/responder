@@ -73,6 +73,14 @@ export default async (payload) => {
       }
     })
     return tableMessages
+  } else if (payload.type === 'first') {
+    const user = await getUser(payload.firstPlay.user)
+    return [{
+      topic: 'broadcast',
+      payload: {
+        message: `${payload.nowPlaying.title} by ${payload.nowPlaying.artist} was first played by ${user} on ${payload.firstPlay.date}`
+      }
+    }]
   } else {
     let statisticsReport = ` ${strings.statsHas} ${strings[iconMapping[payload.type]]} ${payload.stats[payload.type]} ${strings[outroMapping[payload.type]]}`
 
