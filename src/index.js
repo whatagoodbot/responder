@@ -59,6 +59,7 @@ broker.client.on('message', async (topic, data) => {
     metrics.timer('responseTime', performance.now() - startTime, { topic })
   } catch (error) {
     logger.error(error.message)
+    logger.debug(requestPayload)
     // requestPayload = requestPayload || {
     //   messageId: 'ORPHANED'
     // }
