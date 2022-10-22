@@ -38,6 +38,16 @@ export default (knex) => {
           }
         })
     },
+    getAllIncRepeat: async (room, category = 'general') => {
+      return await knex(tableName)
+        .where({ category })
+        .where((queryBuilder) => {
+          if (room) {
+            queryBuilder.where('room', room)
+            queryBuilder.orWhereNull('room')
+          }
+        })
+    },
     getMany: async (room, names, category = 'general') => {
       return await knex(tableName)
         .where({ category })

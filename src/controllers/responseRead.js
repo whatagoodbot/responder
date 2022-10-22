@@ -19,12 +19,15 @@ const read = async (payload) => {
       return reply.type === 'image'
     })
     const returnPayload = {
-      message: `👋 @${payload.nickname} is here. `,
-      mentions: [{
-        userId: payload.key,
-        nickname: payload.nickname,
-        position: 3
-      }]
+      topic: 'broadcast',
+      payload: {
+        message: `👋 @${payload.nickname} is here. `,
+        mentions: [{
+          userId: payload.key,
+          nickname: payload.nickname,
+          position: 3
+        }]
+      }
     }
     if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value
     if (greetingImages.length) returnPayload.image = getRandomString(greetingImages).value
@@ -34,14 +37,20 @@ const read = async (payload) => {
     if (roomGreeting.length) {
       reply = getRandomString(roomGreeting)
       return [{
-        [typeMapping[reply.type]]: reply.value
+        topic: 'broadcast',
+        payload: {
+          [typeMapping[reply.type]]: reply.value
+        }
       }]
     }
   } else if (payload.category === 'badgeReaction') {
     if (replies.length) {
       reply = getRandomString(replies)
       return [{
-        [typeMapping[reply.type]]: reply.value
+        topic: 'broadcast',
+        payload: {
+          [typeMapping[reply.type]]: reply.value
+        }
       }]
     }
   } else if (payload.prefix) {
@@ -59,7 +68,10 @@ const read = async (payload) => {
       }
     }
     return [{
-      message: `${payload.prefix} ${reply.value}`
+      topic: 'broadcast',
+      payload: {
+        message: `${payload.prefix} ${reply.value}`
+      }
     }]
   } else if (payload.suffix) {
     reply = getRandomString(replies)
@@ -76,14 +88,20 @@ const read = async (payload) => {
       }
     }
     return [{
-      message: `${reply.value} ${payload.suffix}`
+      topic: 'broadcast',
+      payload: {
+        message: `${reply.value} ${payload.suffix}`
+      }
     }]
   } else {
     if (payload.position >= 0) {
       reply = replies[payload.position]
       if (reply) {
         return [{
-          [typeMapping[reply.type]]: reply.value
+          topic: 'broadcast',
+          payload: {
+            [typeMapping[reply.type]]: reply.value
+          }
         }]
       }
     } else {
@@ -95,7 +113,10 @@ const read = async (payload) => {
         })
       }
       return [{
-        [typeMapping[reply.type]]: reply.value
+        topic: 'broadcast',
+        payload: {
+          [typeMapping[reply.type]]: reply.value
+        }
       }]
     }
   }

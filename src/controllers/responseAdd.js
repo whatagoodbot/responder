@@ -8,7 +8,10 @@ export default async (payload) => {
   if (result) {
     const intro = getRandomString(await responsesDb.get(null, `${payload.category}Added`, 'system'))
     return [{
-      message: `${intro.value} ${payload.key}`
+      topic: 'broadcast',
+      payload: {
+        message: `${intro.value} ${payload.key}`
+      }
     }]
   }
 }

@@ -11,11 +11,8 @@ const { timestamp, combine, errors, json } = format
 
 function buildDevLogger () {
   return createLogger({
+    level: process.env.LOG_LEVEL || 'info',
     transports: [
-      new transports.Syslog({
-        host: process.env.SYSLOG_HOST,
-        type: 'RFC5424'
-      }),
       new transports.Console()
     ]
   })

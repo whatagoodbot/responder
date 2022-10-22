@@ -20,12 +20,15 @@ export default async (payload) => {
     }
     const user = await getUser(payload.nowPlaying.dj)
     returnPayloads.push({
-      message: `${messageUntilMention}${user.name}. ${songChoiceGloat}`,
-      mentions: [{
-        userId: payload.nowPlaying.dj,
-        nickname: user.name,
-        position: messageUntilMention.length - 1
-      }]
+      topic: 'broadcast',
+      payload: {
+        message: `${messageUntilMention}${user.name}. ${songChoiceGloat}`,
+        mentions: [{
+          userId: payload.nowPlaying.dj,
+          nickname: user.name,
+          position: messageUntilMention.length - 1
+        }]
+      }
     })
   }
   const songResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.title.toLowerCase(), 'songChoice', true)
@@ -33,7 +36,10 @@ export default async (payload) => {
     metrics.count('songResponse', payload)
     const reply = getRandomString(songResponse)
     returnPayloads.push({
-      [typeMapping[reply.type]]: reply.value
+      topic: 'broadcast',
+      payload: {
+        [typeMapping[reply.type]]: reply.value
+      }
     })
   } else {
     const artistResponse = await responsesDb.get(payload.room.slug, payload.nowPlaying.artist.toLowerCase(), 'artistChoice', true)
@@ -41,7 +47,10 @@ export default async (payload) => {
       metrics.count('artistResponse', payload)
       const reply = getRandomString(artistResponse)
       returnPayloads.push({
-        [typeMapping[reply.type]]: reply.value
+        topic: 'broadcast',
+        payload: {
+          [typeMapping[reply.type]]: reply.value
+        }
       })
     }
   }
