@@ -1,10 +1,11 @@
 {
   "name": "responder",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "debug": "FULLDEBUG=true NODE_ENV=production nodemon -r dotenv/config src/index.js",
     "dev": "NODE_ENV=development nodemon -r dotenv/config src/index.js",
     "prod": "NODE_ENV=production nodemon -r dotenv/config src/index.js",
     "lint": "standard",
