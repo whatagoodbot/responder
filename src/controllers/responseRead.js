@@ -15,6 +15,9 @@ const read = async (payload) => {
     const greetingMessages = replies.filter(reply => {
       return reply.type === 'text'
     })
+    const userSpecificGreetingMessages = greetingMessages.filter(reply => {
+      return reply.name === payload.key
+    })
     const greetingImages = replies.filter(reply => {
       return reply.type === 'image'
     })
@@ -29,8 +32,12 @@ const read = async (payload) => {
         }]
       }
     }
-    if (greetingMessages.length) returnPayload.message += getRandomString(greetingMessages).value
-    if (greetingImages.length) returnPayload.image = getRandomString(greetingImages).value
+    if (userSpecificGreetingMessages.length) {
+      returnPayload.payload.message += getRandomString(userSpecificGreetingMessages).value
+    } else if (greetingMessages.length) {
+      returnPayload.payload.message += getRandomString(greetingMessages).value
+    }
+    if (greetingImages.length) returnPayload.payload.image = getRandomString(greetingImages).value
     return [returnPayload]
   } else if (payload.category === 'roomGreeting') {
     const roomGreeting = await responsesDb.get(payload?.room?.slug, payload?.room?.slug, payload.category)
