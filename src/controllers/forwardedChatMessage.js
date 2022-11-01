@@ -24,7 +24,7 @@ export default async (payload) => {
   const keywords = keyNames.map(key => { return key.name }).filter(key => key)
 
   triggers.forEach(trigger => {
-    if (payload.chatMessage.toLowerCase().indexOf(trigger) >= 0) {
+    if (payload.chatMessage.replace(/<[^>]*>?/gm, '').toLowerCase().indexOf(trigger) >= 0) {
       isMentioned = true
     }
   })
