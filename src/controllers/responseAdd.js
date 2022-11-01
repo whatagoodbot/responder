@@ -4,7 +4,7 @@ import getRandomString from '../utils/getRandomString.js'
 
 export default async (payload) => {
   metrics.count('addResponse', payload)
-  const result = await responsesDb.add(payload.key, payload.room.slug, payload.type, payload.value, payload.category)
+  const result = await responsesDb.add(payload.key, payload.room.slug, payload.type, payload.value.replace(/<[^>]*>?/gm, ''), payload.category)
   if (result) {
     const intro = getRandomString(await responsesDb.get(null, `${payload.category}Added`, 'system'))
     return [{
