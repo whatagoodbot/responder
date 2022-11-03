@@ -10,7 +10,6 @@ const typeMapping = {
 const triggers = [
   'groupie ',
   'mg ',
-  ' bot ',
   ' groupie',
   ' mg'
 ]
