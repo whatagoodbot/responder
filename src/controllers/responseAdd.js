@@ -4,7 +4,9 @@ import getRandomString from '../utils/getRandomString.js'
 
 export default async (payload) => {
   metrics.count('addResponse', payload)
-  const result = await responsesDb.add(payload.key, payload.room.slug, payload.type, payload.value.replace(/<[^>]*>?/gm, ''), payload.category)
+  let sanitisedString = payload.value.replace(/<[^>]*>?/gm, '')
+  if (payload.type === 'image') sanitisedString = payload.value.match(/(?<=<img src=").*?(?=")/gm)[0]
+  const result = await responsesDb.add(payload.key, payload.room.slug, payload.type, sanitisedString, payload.category)
   if (result) {
     const intro = getRandomString(await responsesDb.get(null, `${payload.category}Added`, 'system'))
     return [{
