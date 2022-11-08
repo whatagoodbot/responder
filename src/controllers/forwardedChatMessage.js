@@ -13,7 +13,6 @@ const triggers = [
 ]
 
 export default async (payload) => {
-  console.log('analyzing...')
   metrics.count('checkMessage', payload)
   let isMentioned = false
   let hasMatchedKeyword = false
