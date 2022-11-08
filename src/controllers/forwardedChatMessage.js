@@ -72,6 +72,6 @@ export default async (payload) => {
         }
       }
     })
-    return [returnPayload]
+    if (returnPayload.topic) return [returnPayload]
   }
 }
