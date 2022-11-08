@@ -1,6 +1,6 @@
 {
   "name": "responder",
-  "version": "3.1.7",
+  "version": "3.1.8",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -41,8 +41,8 @@
     "standard": "^17.0.0"
   },
   "dependencies": {
-    "@whatagoodbot/mqtt": "^3.0.10",
-    "@whatagoodbot/rpc": "^1.0.8",
+    "@whatagoodbot/mqtt": "^3.0.11",
+    "@whatagoodbot/rpc": "^1.0.12",
     "hot-shots": "^9.2.0",
     "knex": "^2.3.0",
     "message-broker": "github:whatagoodbot/message-broker#v3.0.1",
