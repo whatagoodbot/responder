@@ -9,12 +9,11 @@ const typeMapping = {
 
 const triggers = [
   'groupie ',
-  'mg ',
-  ' groupie',
-  ' mg'
+  ' groupie'
 ]
 
 export default async (payload) => {
+  console.log('analyzing...')
   metrics.count('checkMessage', payload)
   let isMentioned = false
   let hasMatchedKeyword = false
@@ -46,7 +45,7 @@ export default async (payload) => {
     }]
   } else {
     const matchStrings = await responsesDb.getAllIncRepeat(payload.room.slug, 'sentienceMatches')
-    const returnPayloads = []
+    let returnPayload = {}
     matchStrings.forEach(matchString => {
       const words = matchString.name.split(',')
       let matchedWords = 0
@@ -57,23 +56,23 @@ export default async (payload) => {
       })
       if (matchedWords === words.length) {
         if (matchString.type === 'command') {
-          returnPayloads.push({
+          returnPayload = {
             topic: 'externalRequest',
             payload: {
-              service: 'piggy',
+              service: 'external-requests',
               name: matchString.value
             }
-          })
+          }
         } else {
-          returnPayloads.push({
+          returnPayload = {
             topic: 'broadcast',
             payload: {
               [typeMapping[matchString.type]]: matchString.value
             }
-          })
+          }
         }
       }
     })
-    return returnPayloads
+    return [returnPayload]
   }
 }
