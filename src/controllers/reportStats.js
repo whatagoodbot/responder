@@ -75,19 +75,22 @@ export default async (payload) => {
     return tableMessages
   } else if (payload.type === 'first') {
     const user = await getUser(payload.firstPlay.user)
+    // Need to tidy up room name and date - will need to RPC over to RVRB client
     return [{
       topic: 'broadcast',
       payload: {
-        message: `${payload.nowPlaying.title} by ${payload.nowPlaying.artist} was first played by ${user} on ${payload.firstPlay.date}`
+        message: `${payload.nowPlaying.title} by ${payload.nowPlaying.artist} was first played by ${user.name} in ${payload.firstPlay.room} on ${payload.firstPlay.date}`
       }
     }]
   } else {
     let statisticsReport = ` ${strings.statsHas} ${strings[iconMapping[payload.type]]} ${payload.stats[payload.type]} ${strings[outroMapping[payload.type]]}`
 
     if (payload.type === 'stats') {
-      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starsIcon} ${payload.stats.stars} ${strings.starsOutro} ${strings.dopesIcon} ${payload.stats.dopes} ${strings.dopesOutro} ${strings.nopesIcon} ${payload.stats.nopes} ${strings.nopesOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} ${strings.popularTrackScore} ${payload.stats.popular.score}`
+      const user = await getUser(payload.stats.popular.playedBy)
+      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starsIcon} ${payload.stats.stars} ${strings.starsOutro} ${strings.dopesIcon} ${payload.stats.dopes} ${strings.dopesOutro} ${strings.nopesIcon} ${payload.stats.nopes} ${strings.nopesOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} played by ${user.name} ${strings.popularTrackScore} ${payload.stats.popular.score}`
     } else if (payload.type === 'mostpopular') {
-      statisticsReport = `s ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} ${strings.popularTrackScore} ${payload.stats.popular.score}`
+      const user = await getUser(payload.stats.popular.playedBy)
+      statisticsReport = `s ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} played by ${user.name} ${strings.popularTrackScore} ${payload.stats.popular.score}`
     }
     if (payload.filter === 'user') {
       return [{
