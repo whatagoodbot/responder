@@ -81,6 +81,11 @@ export default (knex) => {
         }
       })
       return false
+    },
+    delete: async (name, room, category) => {
+      return await knex(tableName)
+        .where({ name, room, category })
+        .del()
     }
   }
 }
