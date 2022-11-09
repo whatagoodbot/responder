@@ -1,6 +1,7 @@
 import { responsesDb } from '../models/index.js'
 import { metrics } from '../utils/metrics.js'
 import { getUser } from '../libs/grpc.js'
+import roomNames from '../../config/roomNames.js'
 
 export default async (payload) => {
   metrics.count('reportStats', payload)
@@ -76,10 +77,11 @@ export default async (payload) => {
   } else if (payload.type === 'first') {
     const user = await getUser(payload.firstPlay.user)
     // Need to tidy up room name and date - will need to RPC over to RVRB client
+    // Temp room name matching used below from imported file - doesn't work if we add more rooms or the names change
     return [{
       topic: 'broadcast',
       payload: {
-        message: `${payload.nowPlaying.title} by ${payload.nowPlaying.artist} was first played by ${user.name} in ${payload.firstPlay.room} on ${payload.firstPlay.date}`
+        message: `${payload.nowPlaying.title} by ${payload.nowPlaying.artist} was first played by ${user.name} in ${roomNames[payload.firstPlay.room].name} on ${payload.firstPlay.date}`
       }
     }]
   } else {
