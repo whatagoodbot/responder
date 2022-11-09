@@ -86,11 +86,19 @@ export default async (payload) => {
     let statisticsReport = ` ${strings.statsHas} ${strings[iconMapping[payload.type]]} ${payload.stats[payload.type]} ${strings[outroMapping[payload.type]]}`
 
     if (payload.type === 'stats') {
-      const user = await getUser(payload.stats.popular.playedBy)
-      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starsIcon} ${payload.stats.stars} ${strings.starsOutro} ${strings.dopesIcon} ${payload.stats.dopes} ${strings.dopesOutro} ${strings.nopesIcon} ${payload.stats.nopes} ${strings.nopesOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} played by @${user.name} ${strings.popularTrackScore} ${payload.stats.popular.score}`
+      let playedBy = ''
+      if (payload.filter === 'room') {
+        const user = await getUser(payload.stats.popular.playedBy)
+        playedBy = ` played by @${user.name}`
+      }
+      statisticsReport = ` ${strings.statsHas} ${strings.spinsIcon} ${payload.stats.spins} ${strings.spinsOutro} ${strings.starsIcon} ${payload.stats.stars} ${strings.starsOutro} ${strings.dopesIcon} ${payload.stats.dopes} ${strings.dopesOutro} ${strings.nopesIcon} ${payload.stats.nopes} ${strings.nopesOutro}. The ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist}${playedBy} ${strings.popularTrackScore} ${payload.stats.popular.score}`
     } else if (payload.type === 'mostpopular') {
-      const user = await getUser(payload.stats.popular.playedBy)
-      statisticsReport = `s ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist} played by @${user.name} ${strings.popularTrackScore} ${payload.stats.popular.score}`
+      let playedBy = ''
+      if (payload.filter === 'room') {
+        const user = await getUser(payload.stats.popular.playedBy)
+        playedBy = ` played by @${user.name}`
+      }
+      statisticsReport = `s ${strings.popularTrackIntro} ${payload.stats.popular.titleArtist}${playedBy} ${strings.popularTrackScore} ${payload.stats.popular.score}`
     }
     if (payload.filter === 'user') {
       return [{
