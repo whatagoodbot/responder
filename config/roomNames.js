@@ -60,6 +60,6 @@ export default {
     name: 'All day Reggae'
   },
   '635fc5ef2b199f240f37004e': {
-    name: 'Horizons' 
+    name: 'Horizons'
   }
 }
