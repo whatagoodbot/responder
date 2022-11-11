@@ -58,5 +58,8 @@ export default {
   },
   '6363cd3123685d57ece7d552': {
     name: 'All day Reggae'
+  },
+  '635fc5ef2b199f240f37004e': {
+    name: 'Horizons' 
   }
 }
