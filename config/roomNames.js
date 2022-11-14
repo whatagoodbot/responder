@@ -61,5 +61,8 @@ export default {
   },
   '635fc5ef2b199f240f37004e': {
     name: 'Horizons'
+  },
+  '63376b49a4c1c8ee05d239f4': {
+    name: '🌊 Sea of Metal 🌊'
   }
 }
