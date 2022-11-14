@@ -66,7 +66,7 @@ export default {
     name: '🌊 Sea of Metal 🌊'
   },
   '6339362fa4c1c8ee05d254a0': {
-    name: '🍓The Third Punch🥝' 
+    name: '🍓The Third Punch🥝'
   },
   '63376aa1a4c1c8ee05d23897': {
     name: 'The Kitchen'
