@@ -70,5 +70,11 @@ export default {
   },
   '63376aa1a4c1c8ee05d23897': {
     name: 'The Kitchen'
+  },
+  '63585fb0e5d3637cd57867b0': {
+    name: '🎧 HipHopHeads 🎧'
+  },
+  '63376b02a4c1c8ee05d23975': {
+    name: '💔Pop Punk/Rock/Alternative/Emo💔'
   }
 }
