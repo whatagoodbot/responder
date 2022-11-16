@@ -79,4 +79,5 @@ export default {
   },
   '63376a67a4c1c8ee05d23819': {
     name: 'INDIE etc.'
+  }
 }
