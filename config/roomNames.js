@@ -79,5 +79,8 @@ export default {
   },
   '63376a67a4c1c8ee05d23819': {
     name: 'INDIE etc.'
+  },
+  '6307e3c182b9cae8b36d6db3': {
+    name: '🎸 The Mixtape'
   }
 }
