@@ -82,5 +82,8 @@ export default {
   },
   '6307e3c182b9cae8b36d6db3': {
     name: '🎸 The Mixtape'
+  },
+  '635f5ffba557db2254f5d083': {
+    name: 'HB Curruption ⚡'
   }
 }
