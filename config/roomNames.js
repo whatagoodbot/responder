@@ -85,5 +85,8 @@ export default {
   },
   '635f5ffba557db2254f5d083': {
     name: 'HB Curruption ⚡'
+  },
+  '637b8ac68a6ab4cac047150b': {
+    name: 'Magnified POD'
   }
 }
