@@ -88,5 +88,8 @@ export default {
   },
   '637b8ac68a6ab4cac047150b': {
     name: 'Magnified POD'
+  },
+  '637c29b58a6ab4cac0489781': {
+    name: 'Groovin’ House'
   }
 }
