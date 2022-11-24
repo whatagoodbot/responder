@@ -1,15 +1,19 @@
 import { responsesDb } from '../models/index.js'
-import { metrics } from '../utils/metrics.js'
-import { getString } from '../libs/grpc.js'
+import { logger, metrics } from '@whatagoodbot/utilities'
+import { clients } from '@whatagoodbot/rpc'
 
 export default async (payload) => {
-  metrics.count('deleteResponse', payload)
-  const result = await responsesDb.delete(payload.key, payload.room.slug, payload.category)
+  const functionName = 'responseDelete'
+  logger.debug({ event: functionName })
+  metrics.count(functionName)
+  const result = await responsesDb.delete(payload.key, payload.room.id, payload.category)
+  console.log(payload.category)
   let string
+  // TODO need to finds these strings
   if (result) {
-    string = await getString(`deleted_${payload.category}`)
+    string = await clients.strings.get(`deleted_${payload.category}`)
   } else {
-    string = await getString(`deletedNone_${payload.category}`)
+    string = await clients.strings.get(`deletedNone_${payload.category}`)
   }
   return [{
     topic: 'broadcast',
