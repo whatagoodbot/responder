@@ -58,5 +58,44 @@ export default {
   },
   '6363cd3123685d57ece7d552': {
     name: 'All day Reggae'
+  },
+  '635fc5ef2b199f240f37004e': {
+    name: 'Horizons'
+  },
+  '63376b49a4c1c8ee05d239f4': {
+    name: '🌊 Sea of Metal 🌊'
+  },
+  '6339362fa4c1c8ee05d254a0': {
+    name: '🍓The Third Punch🥝'
+  },
+  '63376aa1a4c1c8ee05d23897': {
+    name: 'The Kitchen'
+  },
+  '63585fb0e5d3637cd57867b0': {
+    name: '🎧 HipHopHeads 🎧'
+  },
+  '63376b02a4c1c8ee05d23975': {
+    name: '💔Pop Punk/Rock/Alternative/Emo💔'
+  },
+  '63376a67a4c1c8ee05d23819': {
+    name: 'INDIE etc.'
+  },
+  '6307e3c182b9cae8b36d6db3': {
+    name: '🎸 The Mixtape'
+  },
+  '635f5ffba557db2254f5d083': {
+    name: 'HB Curruption ⚡'
+  },
+  '637b8ac68a6ab4cac047150b': {
+    name: 'Magnified POD'
+  },
+  '637c29b58a6ab4cac0489781': {
+    name: 'Groovin’ House'
+  },
+  '63376bc5a4c1c8ee05d23b05': {
+    name: '◭ UNDERJORDEN ◮'
+  },
+  '635fea942b199f240f3826e7': {
+    name: 'It Will Never Be Pure Again'
   }
 }
