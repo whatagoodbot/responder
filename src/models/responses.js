@@ -1,5 +1,3 @@
-import { logger } from '../utils/logging.js'
-
 const tableName = 'responses'
 
 export default (knex) => {
@@ -69,18 +67,6 @@ export default (knex) => {
           category
         })
       if (results.length > 0) return true
-      logger.error({
-        warning: 'Failed to insert record',
-        table: 'responses',
-        values: {
-          name,
-          room,
-          type,
-          value,
-          category
-        }
-      })
-      return false
     },
     delete: async (name, room, category) => {
       return await knex(tableName)

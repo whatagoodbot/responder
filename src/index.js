@@ -1,21 +1,17 @@
+import { performance } from 'perf_hooks'
 import broker from '@whatagoodbot/mqtt'
 import controllers from './controllers/index.js'
-import { logger } from './utils/logging.js'
-import { metrics } from './utils/metrics.js'
-import { performance } from 'perf_hooks'
-import { delay } from './utils/timing.js'
+import { logger, metrics } from '@whatagoodbot/utilities'
 
 const topicPrefix = `${process.env.NODE_ENV}/`
 
 const subscribe = () => {
   Object.keys(controllers).forEach((topic) => {
     broker.client.subscribe(`${topicPrefix}${topic}`, (err) => {
-      logger.info(`subscribed to ${topicPrefix}${topic}`)
+      logger.info(`Subscribed to ${topicPrefix}${topic}`)
       if (err) {
-        logger.error({
-          error: err.toString(),
-          topic
-        })
+        logger.error(err)
+        logger.debug({ topic })
       }
     })
   })
@@ -27,23 +23,20 @@ if (broker.client.connected) {
   broker.client.on('connect', subscribe)
 }
 
-broker.client.on('error', (err) => {
-  logger.error({
-    error: err.toString()
-  })
-})
+broker.client.on('error', logger.error)
 
-broker.client.on('message', async (topic, data) => {
+broker.client.on('message', async (fullTopic, data) => {
+  const functionName = 'receivedMessage'
   const startTime = performance.now()
-  const topicName = topic.substring(topicPrefix.length)
-  metrics.count('receivedMessage', { topicName })
-  logger.debug(`Received ${topicName}`)
+  const topic = fullTopic.substring(topicPrefix.length)
+  logger.debug({ event: functionName, topic })
+
   let requestPayload
   try {
     requestPayload = JSON.parse(data.toString())
-    const validatedRequest = broker[topicName].validate(requestPayload)
+    const validatedRequest = broker[topic].validate(requestPayload)
     if (validatedRequest.errors) throw { message: validatedRequest.errors } // eslint-disable-line
-    const processedResponses = await controllers[topicName](requestPayload)
+    const processedResponses = await controllers[topic](requestPayload)
     if (!processedResponses || !processedResponses.length) return
     for (const current in processedResponses) {
       const processedResponse = processedResponses[current]
@@ -52,24 +45,14 @@ broker.client.on('message', async (topic, data) => {
         ...processedResponse.payload
       })
       if (validatedResponse.errors) throw { message: validatedResponse.errors } // eslint-disable-line
-      if (process.env.FULLDEBUG) return
-      broker.client.publish(`${topicPrefix}${processedResponse.topic}`, JSON.stringify(validatedResponse))
-      await delay(150)
+      if (processedResponse.topic && !process.env.FULLDEBUG) {
+        logger.debug({ event: 'Publishing', topic: processedResponse.topic })
+        broker.client.publish(`${topicPrefix}${processedResponse.topic}`, JSON.stringify(validatedResponse))
+      }
     }
-
-    metrics.timer('responseTime', performance.now() - startTime, { topic })
+    metrics.trackExecution(functionName, 'mqtt', performance.now() - startTime, true, { topic })
   } catch (error) {
-    logger.error(error.message)
-    logger.debug(requestPayload)
-    // requestPayload = requestPayload || {
-    //   messageId: 'ORPHANED'
-    // }
-    // const validatedResponse = broker.responseRead.validate({
-    //   key: 'somethingWentWrong',
-    //   category: 'system',
-    //   ...requestPayload
-    // })
-    // metrics.count('error', { topicName })
-    // broker.client.publish(`${topicPrefix}responseRead`, JSON.stringify(validatedResponse))
+    logger.error(error)
+    logger.debug({ topic, requestPayload })
   }
 })

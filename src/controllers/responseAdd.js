@@ -1,12 +1,16 @@
 import { responsesDb } from '../models/index.js'
-import { metrics } from '../utils/metrics.js'
-import getRandomString from '../utils/getRandomString.js'
+import { logger, metrics } from '@whatagoodbot/utilities'
+import { clients } from '@whatagoodbot/rpc'
 
-export default async (payload) => {
-  metrics.count('addResponse', payload)
-  const result = await responsesDb.add(payload.key, payload.room.slug, payload.type, payload.value, payload.category)
+export default async payload => {
+  const functionName = 'responseAdd'
+  logger.debug({ event: functionName })
+  metrics.count(functionName)
+
+  const result = await responsesDb.add(payload.key, payload.room.id, payload.type, payload.value, payload.category)
   if (result) {
-    const intro = getRandomString(await responsesDb.get(null, `${payload.category}Added`, 'system'))
+    // TODO Check the response here
+    const intro = await clients.strings.get(`${payload.category}Added`)
     return [{
       topic: 'broadcast',
       payload: {
