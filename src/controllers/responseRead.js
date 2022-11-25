@@ -1,7 +1,8 @@
 import { responsesDb } from '../models/index.js'
 import { logger, metrics, getRandom } from '@whatagoodbot/utilities'
+import { clients } from '@whatagoodbot/rpc'
 
-const read = async payload => {
+export default async payload => {
   const functionName = 'responseRead'
   logger.debug({ event: functionName, category: payload.category })
   metrics.count(functionName, { category: payload.category })
@@ -21,12 +22,7 @@ const read = async payload => {
     }
   } else {
     reply = getRandom.fromArray(replies)
-    if (!reply) {
-      return await read({
-        key: 'aliasUnknown',
-        category: 'system'
-      })
-    }
+    if (!reply) reply = await clients.strings.get('aliasUnknown')
     return [{
       topic: 'broadcast',
       payload: {
@@ -35,4 +31,3 @@ const read = async payload => {
     }]
   }
 }
-export default read
