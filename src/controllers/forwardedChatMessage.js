@@ -59,8 +59,8 @@ export default async payload => {
           returnPayload = {
             topic: 'externalRequest',
             payload: {
-              service: 'external-requests',
-              name: matchString.value
+              service: 'service-external-requests',
+              command: matchString.value
             }
           }
         } else {
