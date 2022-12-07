@@ -67,7 +67,7 @@ export default async payload => {
           returnPayload = {
             topic: 'broadcast',
             payload: {
-              message: getRandom.fromArray(matchString.value.split(',')
+              message: getRandom.fromArray(matchString.value.split('|')
             }
           }
         }
