@@ -1,6 +1,5 @@
 import { responsesDb } from '../models/index.js'
 import { logger, metrics, getRandom } from '@whatagoodbot/utilities'
-import { clients } from '@whatagoodbot/rpc'
 
 export default async payload => {
   const functionName = 'responseRead'
