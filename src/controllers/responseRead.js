@@ -22,7 +22,7 @@ export default async payload => {
     }
   } else {
     reply = getRandom.fromArray(replies)
-    if (!reply) reply = await clients.strings.get('aliasUnknown')
+    if (!reply) return
     return [{
       topic: 'broadcast',
       payload: {
